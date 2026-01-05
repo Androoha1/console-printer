@@ -117,7 +117,7 @@ class Printer {
             } elseif ($text[$i] === '}') {
                 array_pop($groupStack);
             } else {
-                $map[] = end($groupStack);
+                $map[] = $groupStack[count($groupStack) - 1];
             }
         }
 
