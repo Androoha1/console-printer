@@ -41,7 +41,7 @@ class PrinterTest extends TestCase {
     }
 
     /**
-     * @return array<array<string|array>>
+     * @return array<string, array{string, list<Color>, string}>
      */
     public static function dataProvider(): array {
         return [
