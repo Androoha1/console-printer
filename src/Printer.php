@@ -8,23 +8,30 @@ class Printer {
     /**
      * @param list<Color> $colors
      */
-    public function print(string $text, array $colors = []): void {
+    public function print(string $text, array $colors = [], ?Color $background = null): void {
         $this->validateInput($text, $colors);
 
-        if (empty($colors)) {
-            echo $text;
-            return;
+        $output = '';
+
+        if ($background !== null) {
+            $output .= $background->background();
         }
 
-        echo $this->coloredText($text, $colors);
+        $output .= $this->coloredText($text, $colors);
+
+        if ($background !== null) {
+            $output .= "\033[49m";  // Reset background only
+        }
+
+        echo $output;
     }
 
     /**
      * @param list<Color> $colors
      */
-    public function println(string $text, array $colors = []): void {
-        $this->print($text, $colors);
-        self::newLine();
+    public function println(string $text, array $colors = [], ?Color $background = null): void {
+        $this->print($text, $colors, $background);
+        $this->newLine();
     }
 
     public function newLine(): void {
@@ -55,7 +62,7 @@ class Printer {
         $groupCount = $this->countCapturingGroups($text);
 
         if ($groupCount === 0) {
-            return $colors[0]->value . $text . Color::RESET->value;
+            return $colors[0]->foreground() . $text . Color::resetForeground();
         }
 
         $mapping = $this->symbolsToColorsMapping($text);
@@ -77,12 +84,12 @@ class Printer {
 
             if ($groupIndex !== $currentColorIndex) {
                 if ($currentColorIndex > 0) {
-                    $result .= Color::RESET->value;
+                    $result .= Color::resetForeground();
                 }
 
                 if ($groupIndex > 0) {
                     $colorIndex = min($groupIndex - 1, count($colors) - 1);
-                    $result .= $colors[$colorIndex]->value;
+                    $result .= $colors[$colorIndex]->foreground();
                 }
 
                 $currentColorIndex = $groupIndex;
@@ -92,7 +99,7 @@ class Printer {
         }
 
         if ($currentColorIndex > 0) {
-            $result .= Color::RESET->value;
+            $result .= Color::resetForeground();
         }
 
         return $result;

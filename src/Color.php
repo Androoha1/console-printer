@@ -4,15 +4,31 @@ declare(strict_types=1);
 
 namespace Posternak\ConsolePrinter;
 
-enum Color: string {
-    case SOFT_BLUE = "\033[38;5;67m";
-    case CYAN = "\033[96m";
-    case YELLOW = "\033[93m";
-    case GREEN = "\033[32m";
-    case RED = "\033[31m";
-    case GRAY = "\033[90m";
-    case ORANGE = "\033[38;5;208m";
-    case PURPLE = "\033[38;5;141m";
-    case WHITE = "\033[97m";
-    case RESET = "\033[0m";
+enum Color: int {
+    case SOFT_BLUE = 67;
+    case CYAN = 51;
+    case YELLOW = 227;
+    case GREEN = 2;
+    case RED = 1;
+    case GRAY = 8;
+    case ORANGE = 208;
+    case PURPLE = 141;
+    case WHITE = 15;
+    case BLACK = 0;
+
+    public function foreground(): string {
+        return "\033[38;5;{$this->value}m";
+    }
+
+    public function background(): string {
+        return "\033[48;5;{$this->value}m";
+    }
+
+    public static function resetForeground(): string {
+        return "\033[39m";
+    }
+
+    public static function resetBackground(): string {
+        return "\033[49m";
+    }
 }
